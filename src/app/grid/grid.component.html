@@ -1,0 +1,36 @@
+<div class="table-container">
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>User</th>
+      <th>Amount (&euro;)</th>
+      <th>Products</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>Total (&euro;): {{ totalCarts }}</tr>
+      @for (cart of carts; track cart.id) {
+        <tr>
+          <td>{{ cart.id }}</td>
+          <td>{{ cart.userId }}</td>
+          <td>{{ cart.total }}</td>
+          <td>
+            <table>
+              <tr>
+                <th style="width: 40px">ID</th>
+                <th>Title</th>
+              </tr>
+              @for (product of cart.products; track product) {
+                <tr>
+                  <td>{{ product }}</td>
+                  <td>{{ getProductDetails(product)?.title }}</td>
+                </tr>
+              }
+            </table>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
