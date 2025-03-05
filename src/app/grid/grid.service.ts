@@ -18,10 +18,16 @@ export class GridService {
     );
   }
 
+  public getUsers() {
+    return this.itemApi.fetchUsers().pipe(
+      map(response => response.users),
+    )
+  }
+
   public getProducts() {
     return this.itemApi.fetchProductDetails().pipe(
       map(response => {
-        // This aims to bloat the response with a lot of data,
+        // This aims to bloat the response with a lot of data, to simulate a larger database
         const bloatResponse = Array.from({ length: 500000 }, (_, index) => ({
           id: -1 * (index + 1),
         }));

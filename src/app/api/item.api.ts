@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable, tap } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +10,7 @@ export class ItemApi {
   private introducedDelay = 0;
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
   ) {
   }
 
@@ -31,5 +31,9 @@ export class ItemApi {
 
   fetchProductDetails(): Observable<any> {
     return this.http.get(`https://dummyjson.com/products?delay=${this.introducedDelay}&limit=200`);
+  }
+
+  fetchUsers(): Observable<any> {
+    return this.http.get(`https://dummyjson.com/users?delay=${this.introducedDelay}&limit=200`);
   }
 }
