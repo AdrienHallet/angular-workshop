@@ -1,47 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { GridService } from './grid.service';
-import { switchMap, tap } from 'rxjs';
+import { Component, computed, Signal } from '@angular/core';
+import { Observable } from 'rxjs';
+import { UserPipe } from '../user/user.pipe';
+import { AsyncPipe } from '@angular/common';
+import { ProductPipe } from '../product/product.pipe';
+import { CartService } from '../cart/cart.service';
+import { Cart } from '../cart/cart.model';
 
 @Component({
   selector: 'grid-component',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.css'],
+  imports: [
+    UserPipe,
+    AsyncPipe,
+    ProductPipe,
+  ],
 })
-export class TableExampleComponent implements OnInit {
-  carts: Array<any> = [];
-  totalCarts: number = 0;
-  products: Array<any> = [];
-  users: Array<any> = [];
-  isLoading = false;
+export class TableExampleComponent {
+  carts: Signal<Cart[]>;
+  totalCarts: Signal<number>;
+  isReady: Observable<boolean>;
 
   constructor(
-    private gridService: GridService,
+    private cartService: CartService,
   ) {
-  }
-
-  ngOnInit() {
-    this.initializeGrid();
-  }
-
-  protected getProductDetails(productId: number) {
-    return this.products.find(product => product.id === productId);
-  }
-
-  protected getUserDetails(userId: number) {
-    return this.users.find(user => user.id === userId);
-  }
-
-  private initializeGrid() {
-    this.gridService.getProducts().pipe(
-      tap(_ => this.isLoading = true),
-      tap(products => this.products = products),
-      switchMap(_ => this.gridService.getUsers()),
-      tap(users => this.users = users),
-      switchMap(_ => this.gridService.getCarts()),
-    ).subscribe(carts => {
-      this.carts = carts;
-      this.totalCarts = Math.round(carts.reduce((acc, cart) => acc + cart.total, 0));
-      this.isLoading = false;
+    this.carts = this.cartService.getStore();
+    this.totalCarts = computed(() => {
+      return Math.round(this.carts().reduce((acc, cart) => acc + cart.total, 0))
     })
+    this.isReady = this.cartService.fetchAllCarts();
   }
 }

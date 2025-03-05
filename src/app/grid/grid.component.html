@@ -8,15 +8,13 @@
       <th>Products</th>
     </tr>
     </thead>
-    @if (isLoading) {
-      Loading ...
-    } @else {
+    @if (isReady | async) {
       <tbody>
-      <tr>Total (&euro;): {{ totalCarts }}</tr>
-        @for (cart of carts; track cart.id) {
+      <tr>Total (&euro;): {{ totalCarts() }}</tr>
+        @for (cart of carts(); track cart.id) {
           <tr>
             <td>{{ cart.id }}</td>
-            <td>{{ getUserDetails(cart.userId)?.firstName + ' ' + getUserDetails(cart.userId)?.lastName }}</td>
+            <td>{{ cart.userId | user | async }}</td>
             <td>{{ cart.total }}</td>
             <td>
               <table>
@@ -27,7 +25,7 @@
                 @for (product of cart.products; track product) {
                   <tr>
                     <td>{{ product }}</td>
-                    <td>{{ getProductDetails(product)?.title }}</td>
+                    <td>{{ product | product | async }}</td>
                   </tr>
                 }
               </table>
@@ -35,6 +33,8 @@
           </tr>
         }
       </tbody>
+    } @else {
+      Loading ...
     }
   </table>
 </div>

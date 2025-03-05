@@ -5,7 +5,7 @@ import { map, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class ItemApi {
+export class CommonApi {
 
   private introducedDelay = 0;
 
