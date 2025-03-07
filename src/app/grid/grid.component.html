@@ -8,7 +8,7 @@
       <th>Products</th>
     </tr>
     </thead>
-    @if (isReady | async) {
+    @if (isReady()) {
       <tbody>
       <tr>Total (&euro;): {{ totalCarts() }}</tr>
         @for (cart of carts(); track cart.id) {

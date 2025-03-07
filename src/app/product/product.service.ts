@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { CommonApi } from '../api/common.api';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Product } from './product.model';
 
+/**
+ * Manipulates products
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -15,6 +18,11 @@ export class ProductService {
   ) {
   }
 
+  /**
+   * Returns the details of a product based on its ID.
+   *
+   * @param productId the ID of the product to retrieve
+   */
   public getProductDetails(productId: number): Observable<number | Product> {
     if (!this.productStore.has(productId)) {
       this.productStore.set(productId, new BehaviorSubject<number | Product>(productId));
@@ -24,17 +32,14 @@ export class ProductService {
   }
 
   private refreshLocalStore() {
+    // Because in this simplistic application we fetch all products at once,
+    // we know that if we sent one HTTP call, we already are going to receive all products.
+    // In other use-cases, you could deduce, based on the ID, if the product is already being
+    // fetched or not.
+    // This logic avoids to send multiple requests if we want to fetch the same product in multiple places.
     if (!this.isRefreshing) {
       this.isRefreshing = true;
-      this.commonApi.fetchProductDetails().pipe(
-        map(response => {
-          // This aims to bloat the response with a lot of data, to simulate a larger database
-          const bloatResponse = Array.from({ length: 500000 }, (_, index) => ({
-            id: -1 * (index + 1),
-          }));
-          return [...bloatResponse, ...response.products];
-        }),
-      ).subscribe((products: Product[]) => {
+      this.commonApi.fetchProductDetails().subscribe((products: Product[]) => {
         products.forEach(product => {
           if (this.productStore.has(product.id)) {
             (this.productStore.get(product.id)!.next(product));

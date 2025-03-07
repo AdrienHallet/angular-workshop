@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { User } from './user.model';
 import { CommonApi } from '../api/common.api';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
+/**
+ * Manipulates users.
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -15,6 +18,11 @@ export class UserService {
   ) {
   }
 
+  /**
+   * Retrieves the details of a user from its ID.
+   *
+   * @param userId the user ID
+   */
   public getUserDetails(userId: number): Observable<number | User> {
       if (!this.userStore.has(userId)) {
         this.userStore.set(userId, new BehaviorSubject<number | User>(userId));
@@ -24,11 +32,10 @@ export class UserService {
   }
 
   private refreshLocalStore() {
+    // See explanation on the products service.
     if (!this.isRefreshing) {
       this.isRefreshing = true;
-      this.commonApi.fetchUsers().pipe(
-        map(response => response.users),
-      ).subscribe((users: User[]) => {
+      this.commonApi.fetchUsers().subscribe((users: User[]) => {
         users.forEach(user => {
           if (this.userStore.has(user.id)) {
             (this.userStore.get(user.id)!.next(user));

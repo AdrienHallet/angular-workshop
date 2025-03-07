@@ -1,5 +1,4 @@
 import { Component, computed, Signal } from '@angular/core';
-import { Observable } from 'rxjs';
 import { UserPipe } from '../user/user.pipe';
 import { AsyncPipe } from '@angular/common';
 import { ProductPipe } from '../product/product.pipe';
@@ -19,7 +18,7 @@ import { Cart } from '../cart/cart.model';
 export class TableExampleComponent {
   carts: Signal<Cart[]>;
   totalCarts: Signal<number>;
-  isReady: Observable<boolean>;
+  isReady: Signal<boolean | undefined>;
 
   constructor(
     private cartService: CartService,
