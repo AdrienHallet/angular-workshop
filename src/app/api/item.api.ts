@@ -7,7 +7,7 @@ import { map, Observable } from 'rxjs';
 })
 export class ItemApi {
 
-  private introducedDelay = 0;
+  private introducedDelay = 3000; // This fake delay is used to simulate a slow back-end, do not touch it
 
   constructor(
     private http: HttpClient,
